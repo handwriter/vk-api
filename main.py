@@ -13,12 +13,15 @@ def main():
         return
     vk = vk_session.get_api()
     # Используем метод wall.get
-    response = vk.wall.get(count=5)
+    response = response = vk.friends.get(fields="first_name, last_name, bdate")
     if response['items']:
-        for i in response['items']:
-            print(f'{i["text"]};')
-            print(f'date: {datetime.fromtimestamp(i["date"]).date()}, time: {datetime.fromtimestamp(i["date"]).time()};')
+        for i in sorted(response['items'], key=lambda x: x['last_name']):
+            print(i['last_name'], i['first_name'], end=' ')
+            a = ''
+            if 'bdate' in i:
+                a = i['bdate']
+            print(a)
 
 
-if __name__ == '__main__':
+if __name__ == '__mai n__':
     main()
