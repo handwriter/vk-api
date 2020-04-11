@@ -94,16 +94,12 @@ def main():
                     193813979, photo[0]['id']
                 )
                 vk_g.messages.send(user_id=event.obj.message['from_id'],
-                                   message="Фото",
+                                   message=f"Это {toponym_to_find}. Что вы еще хотите увидеть?",
                                    attachment=vk_photo_url,
                                    random_id=random.randint(0, 2 ** 64))
                 # Создадим картинку
                 # и тут же ее покажем встроенным просмотрщиком операционной системы
                 status = 1
-                vk_g.messages.send(user_id=event.obj.message['from_id'],
-                                   message="Введите назвавние местности, фото которой вы хотите получить",
-                                   random_id=random.randint(0, 2 ** 64))
-
 
 if __name__ == '__main__':
     main()
