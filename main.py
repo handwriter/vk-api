@@ -7,22 +7,24 @@ from datetime import datetime
 import wikipedia
 
 
-vk_session = VkApi(token=TOKEN)
 vk_group_session = VkApi(token=TOKEN_GROUP)
 longpoll = VkBotLongPoll(vk_group_session, '193813979')
 
 
 def main():
-    vk = vk_session.get_api()
     vk_g = vk_group_session.get_api()
-    attachments = [f'photo-{193813979}_{i["id"]}' for i in vk.photos.get(owner_id=-193813979, album_id='271691298')['items']]
-    print(random.choice(attachments))
+    status = 0
     for event in longpoll.listen():
         if event.type == VkBotEventType.MESSAGE_NEW:
-            vk_g.messages.send(user_id=event.obj.message['from_id'],
-                             message="Ответ",
-                             attachment=random.choice(attachments),
-                             random_id=random.randint(0, 2 ** 64))
+            if status == 0:
+                vk_g.messages.send(user_id=event.obj.message['from_id'],
+                                 message="Напишите боту дату в формате YYYY-MM-DD, и он отправит в ответ день недели",
+                                 random_id=random.randint(0, 2 ** 64))
+                status = 1
+            elif status == 1:
+                vk_g.messages.send(user_id=event.obj.message['from_id'],
+                                   message=datetime(*list(map(int, event.obj.message['text'].split('-')))).isoweekday(),
+                                   random_id=random.randint(0, 2 ** 64))
 
 if __name__ == '__main__':
     main()
